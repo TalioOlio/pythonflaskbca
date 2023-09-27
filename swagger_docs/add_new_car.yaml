@@ -1,0 +1,38 @@
+openapi: 3.0.0
+
+info:
+  title: Menambah mobil
+  version: 1.0.0
+
+tags:
+  - name: Daftar API
+
+parameters:
+  - in: body
+    name: body
+    description: Mobil baru yang akan didata
+    required: true
+    schema:
+      $ref: '#/definition/Cars'
+
+responses:
+  201:
+    description: Mobil baru berhasil didata
+    schema:
+      $ref: '#/definitions/Cars'
+
+definitions:
+  Cars:
+    type: object
+    properties:
+      model:
+        type: string
+      price_per_day:
+        type: number
+      availability:
+        type: boolean
+    requiredavailability:
+      - model
+      - price_per_day
+      - availability
+

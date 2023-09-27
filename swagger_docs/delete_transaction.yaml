@@ -1,0 +1,21 @@
+openapi: 3.0.0
+
+info:
+  title: Menghapus data transaksi aktif
+  version: 1.0.0
+
+tags:
+  - name: Daftar API
+
+parameters:
+  - name: rentals_id
+    in: path
+    description: ID dari transaksi yang akan dihapus
+    required: true
+    type: integer
+
+responses:
+  200:
+    description: Mobil berhasil dihapus dari data
+  404:
+    description: Error! data mobil tidak berhasil ditemukan

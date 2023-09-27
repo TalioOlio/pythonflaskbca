@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | Car Rental</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="blue-theme">
+    <h2>Car Rental System</h2>
+    <h4>Add and Rent your car with us!</h4>
+
+    <div class="menu">
+        <!-- Car -->
+        <a href="/car/add_new" class="menu-button">Add New Car</a>
+        <a href="/car/delete" class="menu-button">Discard a Car</a>
+        <a href="/car/update_price" class="menu-button">Update Car Price</a>
+
+        <!-- Transaction -->
+        <a href="/create_transaction" class="menu-button">Create Transaction</a>
+        <a href="/delete_transaction" class="menu-button">Delete Transaction</a>
+    </div>
+</body>
+</html>

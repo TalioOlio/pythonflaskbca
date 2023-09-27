@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car List | Car Rental</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <a href="/" class="home-button">Back to Homepage</a>
+    <h1>Car List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Cars ID</th>
+                <th>Cars Model</th>
+                <th>Price per Day</th>
+                <th>Availability Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for car in car_list %}
+            <tr>
+                <td>{{ car.car_id }}</td>
+                <td>{{ car.model }}</td>
+                <td>{{ car.price_per_day }}</td>
+                <td>{{ car.availability }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

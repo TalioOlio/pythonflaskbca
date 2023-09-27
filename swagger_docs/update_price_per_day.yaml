@@ -1,0 +1,43 @@
+openapi: 3.0.0
+
+info:
+  title: Menambah mobil
+  version: 1.0.0
+
+tags:
+  - name: Daftar API
+
+parameters:
+  - name: cars_id
+    in: path
+    description: ID dari Mobil yang akan dihapus
+    required: true
+    type: integer
+
+  - in: body
+    name: body
+    description: Update harga sewa harian mobil
+    required: true
+    schema:
+      $ref: '#/definition/Cars'
+
+responses:
+  200:
+    description: Mobil berhasil dihapus dari data
+  404:
+    description: Error! data mobil tidak berhasil ditemukan
+
+definitions:
+  Cars:
+    type: object
+    properties:
+      model:
+        type: string
+      price_per_day:
+        type: number
+      availability:
+        type: boolean
+    required:
+      - model
+      - price_per_day
+      - availability
