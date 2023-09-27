@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a Car | Car Rental</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <body>
+        <h2>Add New Car</h2>
+        <div class="form-container">
+            {% if error %}
+                <p style="color:red;">{{ error }}</p>
+            {% endif %}
+            
+            <form action="/car/add_new" method="POST">
+                <label for="model">Car Model:</label>
+                <input type="text" name="model" id="model" placeholder="Car Model">
+                <br>
+                <label for="price_per_day">Rent Price per Day:</label>
+                <input type="number" name="price_per_day" id="price_per_day" placeholder="Price per Day">
+                <br>
+                <input type="submit" value="Add">
+            </form>
+        <a href="/" class="home-button yellow-button">Back to Homepage</a> <!--style.css-->
+        </div>
+    </body>
+</body>
+</html>
