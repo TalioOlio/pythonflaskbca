@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <a href="/" class="home-button">Back to Homepage</a>
     <h1>Car List</h1>
     <table>
         <thead>
@@ -25,10 +24,16 @@
                 <td>{{ car.car_id }}</td>
                 <td>{{ car.model }}</td>
                 <td>{{ car.price_per_day }}</td>
-                <td>{{ car.availability }}</td>
+                {% if car.availability == False %}
+                    <td>Not Available</td>
+                {% else %}
+                    <td>Available</td>
+                {% endif %}
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    <br>
+    <a href="/" class="home-button">Back to Homepage</a>
 </body>
 </html>

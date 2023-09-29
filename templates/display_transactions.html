@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction List | Car Rental</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Transaction List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Rental ID</th>
+                <th>Cars ID</th>
+                <th>Customer Name</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Total Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transaction_list %}
+            <tr>
+                <td>{{ transaction.rental_id }}</td>
+                <td>{{ transaction.car_id }}</td>
+                <td>{{ transaction.customer_name }}</td>
+                <td>{{ transaction.start_date }}</td>
+                <td>{{ transaction.end_date }}</td>
+                <td>{{ transaction.total_price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <a href="/" class="home-button">Back to Homepage</a>
+</body>
+</html>

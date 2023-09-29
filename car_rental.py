@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 from flasgger import Swagger, swag_from
 # import datetime
 import os
@@ -83,7 +84,8 @@ def add_new_car():
 
         new_car = Cars(
             model = model,
-            price_per_day = price_per_day
+            price_per_day = price_per_day,
+            availability = True
         )
 
         db.session.add(new_car)
@@ -92,32 +94,130 @@ def add_new_car():
         
     return render_template('add_new_car.html')
 
+# # Display All Cars
+@app.route('/car/list', methods=['GET'])
+def display_cars():
+    car_list = []
+    try:
+        if request.method == 'GET':
+            car_list = Cars.query.all()
+    except Exception as e:
+        error_message = f"There is an error: {e}"
+        print(error_message)
+    finally:
+        return render_template('display_cars.html', car_list=car_list)
+
 # Koneksi API Delete
 @app.route('/car/delete/<int:car_id>', methods=['DELETE'])
 @swag_from('swagger_docs/delete_car.yaml')
-def delete_car(car_id):
+def delete_car_with_id(car_id):
     try:
-        car_delete = Cars.query.filter_by(car_id = car_id).first
+        car_delete = Cars.query.filter_by(car_id = car_id).first()
+        
+        if car_delete:
+            db.session.delete(car_delete)
+            db.session.commit()
+            return jsonify ({'message': f'The car with car ID {car_id} has been successfully deleted'}), 200
+        else:
+            return jsonify ({'message': f'Can not find the car with car ID {car_id}'}), 404
+    except Exception as e:
+        return jsonify({'message': f"There is an error: {e}"}), 500
 
 @app.route('/car/delete', methods=['GET', 'POST'])
 def delete_car():
     car_list = []
     try:
-        print("masuk try")
         if request.method == 'GET':
-            cars = Cars.query.all()
-            car_list = cars
+            car_list = Cars.query.all()
     except Exception as e:
         error_message = f"There is an error: {e}"
-        # print(error_message)
+        print(error_message)
     finally:
-        print("finally")
-        print(car_list)
-        for car in car_list:
-            print(car.model, car.price_per_day, car.availability)
-            print(car.car_id)
         return render_template('delete_car.html', car_list=car_list)
 
 
+## Transaction
+@app.route('/transaction/create', methods=['GET', 'POST'])
+def create_transaction():
+    try:
+        car_list = []
+        if request.method == 'GET':
+            car_list = Cars.query.all()
+        if request.method == "POST":
+            # car_list = Cars.query.all()
+            car_id = request.form.get('car_id')
+            customer_name = request.form.get('customer_name')
+            start_date = request.form.get('start_date')
+            end_date = request.form.get('end_date')
+            car = db.session.get(Cars, car_id)
+            print(request.form, car_id)
+            if not car:
+                return render_template('create_transaction.html', car_list=car_list, error='There is no available car')
+            if not customer_name or not start_date or not end_date:
+                return render_template('create_transaction.html', car_list=car_list, error='Required')
+            print(car)
+            
+            new_transaction = Rentals(
+                car_id = car_id,
+                customer_name = customer_name,
+                start_date = datetime.strptime(start_date, "%Y-%m-%d"),
+                end_date = datetime.strptime(end_date, "%Y-%m-%d"),
+                total_price = (datetime.strptime(end_date, "%Y-%m-%d") - datetime.strptime(start_date, "%Y-%m-%d")).days,*car.price_per_day
+            )
+            car.availability = False
+            db.session.add(new_transaction)
+            db.session.commit()
+            return render_template('display_transactions.html') #setelah insert ke db, pergi kemana
+        return render_template('index.html') #setelah insert ke db, pergi kemana
+        
+    except Exception as e:
+        return jsonify({'message': f"There is an error: {e}"}), 500
+    finally:
+        return render_template('create_transaction.html', car_list=car_list)
+        
+# # Display All Transactions
+@app.route('/transaction/list', methods=['GET'])
+def display_transactions():
+    transaction_list = []
+    try:
+        if request.method == 'GET':
+            transaction_list = Rentals.query.all()
+    except Exception as e:
+        error_message = f"There is an error: {e}"
+        print(error_message)
+    finally:
+        return render_template('display_transactions.html', transaction_list=transaction_list)
+
+# Delete Transactions 
+@app.route('/transaction/delete/<int:rental_id>', methods=['DELETE'])
+@swag_from('swagger_docs/delete_transaction.yaml')
+def delete_transaction_with_id(rental_id):
+    try:
+        transaction_delete = db.session.get(Rentals, rental_id)
+        car = db.session.get(Cars, transaction_delete.car_id)
+        
+        if transaction_delete:
+            car.availability = True
+            db.session.delete(transaction_delete)
+            db.session.commit()
+            return jsonify ({'message': f'The car with car ID {rental_id} has been successfully deleted'}), 200
+        else:
+            return jsonify ({'message': f'Can not find the car with car ID {rental_id}'}), 404
+    except Exception as e:
+        return jsonify({'message': f"There is an error: {e}"}), 500
+
+@app.route('/transaction/delete', methods=['GET', 'POST'])
+def delete_transaction():
+    transaction_list = []
+    try:
+        if request.method == 'GET':
+            transaction_list = Rentals.query.all()
+    except Exception as e:
+        error_message = f"There is an error: {e}"
+        print(error_message)
+    finally:
+        return render_template('delete_transaction.html', transaction_list=transaction_list)
+
 if __name__ == '__main__':
+    # app.run(debug=True) 
     app.run(debug=True, port=5050)

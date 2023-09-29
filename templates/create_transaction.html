@@ -10,21 +10,50 @@
 <body>
     <body>
         <h2>Create Transaction Now!</h2>
+        <br><br>
+        <h3>Available Car List</h2>
+        <br>
+        <table>
+            <tr>
+                <th>Car ID</th>
+                <th>Model</th>
+                <th>Price per Day</th>
+                <th>Availability Status</th>
+            </tr>
+            {% for car in car_list %}
+                {% if car.availability %} 
+                <tr>
+                    <td>{{ car.car_id }}</td>
+                    <td>{{ car.model }}</td>
+                    <td>{{ car.price_per_day }}</td>
+                    <td>{{ car.availability }}</td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        </table>   
         <div class="form-container">
             {% if error %}
                 <p style="color:red;">{{ error }}</p>
             {% endif %}
-            
-            <form action="/create_transaction" method="POST">
+            <form action="/transaction/create" method="POST">
+                <label for="car_id">Car ID</label>
+                <select name="car_id" id="car_id">
+                    {% for car in car_list %}
+                    {% if car.availability %} 
+                        <option value="{{ car.car_id }}">{{ car.car_id }}</option>
+                    {% endif %}
+                {% endfor %}
+                </select>
+                <br>
                 <label for="customer_name">Customer Name:</label>
                 <input type="text" name="customer_name" id="customer_name" placeholder="Customer Name">
                 <br>
                 <label for="start_date">Start Date:</label>
-                <input type="datetime" name="start_date" id="start_date" placeholder="Start Date">
+                <input type="date" name="start_date" id="start_date" placeholder="Start Date">
                 <br>
                 <label for="end_date">End Date:</label>
-                <input type="datetime" name="end_date" id="end_date" placeholder="End Date">
-                <br>
+                <input type="date" name="end_date" id="end_date" placeholder="End Date">
+                <br><br>
                 <input type="submit" value="Add">
             </form>
         <a href="/" class="home-button yellow-button">Back to Homepage</a> <!--style.css-->
