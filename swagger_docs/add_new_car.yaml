@@ -1,7 +1,7 @@
 openapi: 3.0.0
 
 info:
-  title: Menambah mobil
+  title: Car Rental System
   version: 1.0.0
 
 tags:
@@ -13,7 +13,7 @@ parameters:
     description: Mobil baru yang akan didata
     required: true
     schema:
-      $ref: '#/definition/Cars'
+      $ref: '#/definitions/Cars'
 
 responses:
   201:
@@ -31,8 +31,8 @@ definitions:
         type: number
       availability:
         type: boolean
-    requiredavailability:
-      - model
-      - price_per_day
-      - availability
+      required:
+        - model
+        - price_per_day
+        - availability
 

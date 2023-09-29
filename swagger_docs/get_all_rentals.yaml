@@ -1,0 +1,34 @@
+openapi: 3.0.0
+
+info:
+  title: Car Rental System
+  version: 1.0.0
+
+tags:
+  - name: Daftar API
+
+
+responses:
+  200:
+    description: Transaksi Rental berhasil diambil
+    schema:
+      type: array #karena get all
+      items:
+        $ref: '#/definitions/Rentals'
+
+definitions:
+  Rentals:
+    type: object
+    properties:
+      car_id:
+        type: integer
+      customer_name:
+        type: string
+      start_date:
+        type: string
+        format: date
+      end_date:
+        type: string
+        format: date
+      total_price:
+        type: number

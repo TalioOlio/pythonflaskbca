@@ -1,7 +1,7 @@
 openapi: 3.0.0
 
 info:
-  title: Membuat Transaksi Rental
+  title: Car Rental System
   version: 1.0.0
 
 tags:
@@ -13,7 +13,7 @@ parameters:
     description: Detail Transaksi yang akan dibuat
     required: true
     schema:
-      $ref: '#/definition/Rentals'
+      $ref: '#/definitions/Rentals'
 
 responses:
   201:
@@ -30,14 +30,16 @@ definitions:
       customer_name:
         type: string
       start_date:
-        type: date
+        type: string
+        format: date
       end_date:
-        type: date
+        type: string
+        format: date
       total_price:
         type: number
-    required:
-      - car_id
-      - customer_name
-      - start_date
-      - end_date
-      - total_price
+      required:
+        - car_id
+        - customer_name
+        - start_date
+        - end_date
+        - total_price

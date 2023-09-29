@@ -1,7 +1,7 @@
 openapi: 3.0.0
 
 info:
-  title: Menghapus mobil
+  title: Car Rental System
   version: 1.0.0
 
 tags:

@@ -1,0 +1,32 @@
+openapi: 3.0.0
+
+info:
+  title: Car Rental System
+  version: 1.0.0
+
+tags:
+  - name: Daftar API
+
+parameters:
+  - name: car_id
+    in: path
+    description: Car ID
+    required: true
+    type: integer
+  - in: body
+    name: body
+    description: update car availability
+    required: true
+    schema:
+      type: object
+      properties:
+        availability:
+          type: boolean
+
+responses:
+  200:
+    description: Car availability updated
+    schema:
+      $ref: '#/definitions/Cars'
+  404:
+    description: Car not found

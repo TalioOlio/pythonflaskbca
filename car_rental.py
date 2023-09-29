@@ -59,18 +59,18 @@ def index():
 
 # Koneksi API
 ## Create
-# @app.route('/car/add_new', methods=['POST'])
-# @swag_from('swagger_docs/add_new_car.yaml')
-# def add_new_car_api():
-#     data = request.json
-#     new_car = Cars(
-#         model = data['model'],
-#         price_per_day = data['price_per_day']
-#         # quantity default true
-#     )
-#     db.session.add(new_car)
-#     db.session.commit()
-#     return jsonify ({'message': 'Success! A new car has been added to the data.'}), 201
+@app.route('/car/add_new', methods=['POST'])
+@swag_from('swagger_docs/add_new_car.yaml')
+def add_new_car_api():
+    data = request.json
+    new_car = Cars(
+        model = data['model'],
+        price_per_day = data['price_per_day'],
+        availability = True
+    )
+    db.session.add(new_car)
+    db.session.commit()
+    return jsonify ({'message': 'Success! A new car has been added to the data.'}), 201
 
 
 #Fungsi menambahkan data
@@ -95,6 +95,24 @@ def add_new_car():
     return render_template('add_new_car.html')
 
 # # Display All Cars
+@app.route('/car/list_api', methods=['GET'])
+@swag_from('swagger_docs/get_all_cars.yaml')
+def display_cars_api():
+    car_list = []
+    try:
+        cars = Cars.query.all()
+        for car in cars:
+            data = {
+                'car_id': car.car_id,
+                'model': car.model,
+                'price_per_day': car.price_per_day,
+                'availability': car.availability
+            }
+            car_list.append(data)
+        return jsonify(car_list), 200
+    except Exception as e:
+        return jsonify({'message': f"There is an error: {e}"}), 500
+
 @app.route('/car/list', methods=['GET'])
 def display_cars():
     car_list = []
@@ -137,6 +155,34 @@ def delete_car():
 
 
 ## Transaction
+# create api
+@app.route('/transaction/create', methods=['POST'])
+@swag_from('swagger_docs/add_new_transaction.yaml')
+def create_transaction_api():
+    try:
+        data = request.json #untuk ambil body
+        car_id = data['car_id']
+        customer_name = data['customer_name']
+        start_date = data['start_date']
+        end_date = data['end_date']
+        car = db.session.get(Cars, car_id)
+        
+        new_transaction = Rentals(
+            car_id = car_id,
+            customer_name = customer_name,
+            start_date = datetime.strptime(start_date, "%Y-%m-%d"),
+            end_date = datetime.strptime(end_date, "%Y-%m-%d"),
+            total_price = (datetime.strptime(end_date, "%Y-%m-%d") - datetime.strptime(start_date, "%Y-%m-%d")).days,*car.price_per_day
+        )
+        car.availability = False
+        db.session.add(new_transaction)
+        db.session.commit()
+        return jsonify ({'message': 'Success! A new car has been added to the data.'}), 201
+        
+    except Exception as e:
+        return jsonify({'message': f"There is an error: {e}"}), 500
+
+# create program
 @app.route('/transaction/create', methods=['GET', 'POST'])
 def create_transaction():
     try:
@@ -144,18 +190,15 @@ def create_transaction():
         if request.method == 'GET':
             car_list = Cars.query.all()
         if request.method == "POST":
-            # car_list = Cars.query.all()
             car_id = request.form.get('car_id')
             customer_name = request.form.get('customer_name')
             start_date = request.form.get('start_date')
             end_date = request.form.get('end_date')
             car = db.session.get(Cars, car_id)
-            print(request.form, car_id)
             if not car:
                 return render_template('create_transaction.html', car_list=car_list, error='There is no available car')
             if not customer_name or not start_date or not end_date:
                 return render_template('create_transaction.html', car_list=car_list, error='Required')
-            print(car)
             
             new_transaction = Rentals(
                 car_id = car_id,
@@ -176,6 +219,28 @@ def create_transaction():
         return render_template('create_transaction.html', car_list=car_list)
         
 # # Display All Transactions
+# api get
+@app.route('/transaction/list_api', methods=['GET'])
+@swag_from('swagger_docs/get_all_rentals.yaml')
+def display_transactions_api():
+    transaction_list = []
+    try:
+        transactions = Rentals.query.all()
+        for transaction in transactions:
+            data = {
+                'rental_id': transaction.rental_id,
+                'car_id': transaction.car_id,
+                'customer_name': transaction.customer_name,
+                'start_date': transaction.start_date,
+                'end_date': transaction.end_date,
+                'total_price': transaction.total_price
+            }
+            transaction_list.append(data)
+        return jsonify(transaction_list), 200
+    except Exception as e:
+        return jsonify({'message': f"There is an error: {e}"}), 500
+    
+# get program
 @app.route('/transaction/list', methods=['GET'])
 def display_transactions():
     transaction_list = []
