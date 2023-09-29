@@ -284,5 +284,5 @@ def delete_transaction():
         return render_template('delete_transaction.html', transaction_list=transaction_list)
 
 if __name__ == '__main__':
-    # app.run(debug=True) 
-    app.run(debug=True, port=5050)
+    app.run(debug=True) 
+    # app.run(debug=True, port=5050)
